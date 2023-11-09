@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-public class Main {
+public class BOJ15558 {
 
     static int N, k;
     static int[][] lines;
