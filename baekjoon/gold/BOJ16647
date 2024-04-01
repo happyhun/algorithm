@@ -1,0 +1,88 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Main {
+
+	static int N;
+	static char[] expression;
+	static int answer;
+	static boolean[] brackets;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		expression = br.readLine().toCharArray();
+		brackets = new boolean[N / 2];
+		answer = Integer.MIN_VALUE;
+		
+		solve();
+		System.out.println(answer);
+	}
+
+	private static void solve() {
+		permutation(0);
+	}
+
+	private static void permutation(int depth) {
+		if (depth == N / 2) {
+			int result = (int) calculate();
+			answer = Math.max(answer, result);
+			return;
+		}
+
+		if (depth == 0 || brackets[depth - 1] == false) {
+			brackets[depth] = true;
+			permutation(depth + 1);
+		}
+		brackets[depth] = false;
+		permutation(depth + 1);
+	}
+
+	private static long calculate() {
+		long[] nums = new long[N / 2 + 1];
+		char[] ops = new char[N / 2];
+
+		for (int i = 0; i < N; i++) {
+			if (i % 2 == 0) {
+				nums[i / 2] = expression[i] - '0';
+			} else {
+				ops[i / 2] = expression[i];
+			}
+		}
+
+		for (int i = 0; i < N / 2; i++) {
+			boolean bracket = brackets[i];
+			if (bracket) {
+				long a = nums[i];
+				char op = ops[i];
+				long b = nums[i + 1];
+				long result = calc(a, op, b);
+				nums[i] = result;
+				ops[i] = '+';
+				nums[i + 1] = 0;
+			}
+		}
+
+		long result = nums[0];
+		for (int i = 0; i < N / 2; i++) {
+			char op = ops[i];
+			long b = nums[i + 1];
+			result = calc(result, op, b);
+		}
+
+		return result;
+	}
+
+	private static long calc(long a, char op, long b) {
+		if (op == '+') {
+			return a + b;
+		}
+		if (op == '-') {
+			return a - b;
+		}
+		return a * b;
+	}
+}
